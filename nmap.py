@@ -1,14 +1,15 @@
 import socket
 import concurrent.futures
 import ipaddress
+import argparse
 
 def scan_port(ip, port):
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(1)
-            s.connect((ip, port))
-            print(f"Port {port} open on {ip}")
-    except:
+            if s.connect_ex((ip, port)) == 0:
+                print(f"Port {port} open on {ip}")
+    except Exception as e:
         pass
 
 def scan_ip(ip):
@@ -18,8 +19,15 @@ def scan_ip(ip):
 
 def scan_network(network):
     for ip in ipaddress.IPv4Network(network, strict=False):
+        print(f"Scanning IP: {ip}")
         scan_ip(str(ip))
 
+def main():
+    parser = argparse.ArgumentParser(description='Simple Port Scanner')
+    parser.add_argument('network', type=str, help='IP address or network (e.g., 192.168.1.0/24)')
+    args = parser.parse_args()
+
+    scan_network(args.network)
+
 if __name__ == "__main__":
-    target_network = input("Enter IP address or network (e.g., 192.168.1.0/24): ")
-    scan_network(target_network)
+    main()
