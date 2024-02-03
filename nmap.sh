@@ -1,7 +1,12 @@
 #!/bin/bash
 
-# 输入IP地址和子网掩码（例如：192.168.1.0/24）
-read -p "Enter IP address (with subnet mask, e.g., 192.168.1.0/24): " target
+# 检查是否有足够的命令行参数
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 IP_ADDRESS/SUBNET_MASK"
+    exit 1
+fi
+
+target=$1
 
 # 使用ipcalc获取子网内的所有IP地址（假设ipcalc已安装）
 # 注意：这里只是展示如何获取IP范围，实际脚本需要根据输出调整解析逻辑
